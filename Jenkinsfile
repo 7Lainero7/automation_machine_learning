@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.9'
-            args '-v /tmp:/tmp --user root'
+            args '--user root -v /tmp:/tmp'
         }
     }
 
@@ -13,10 +13,26 @@ pipeline {
             }
         }
 
+        stage('Setup Environment') {
+            steps {
+                sh '''
+                python -m ensurepip --upgrade
+                python -m pip install --upgrade pip
+                pip install virtualenv
+                python -m virtualenv venv
+                . venv/bin/activate
+                pip install -r requirements.txt
+                '''
+            }
+        }
+
         stage('Run Pipeline') {
             steps {
-                sh 'chmod +x pipeline.sh'
-                sh './pipeline.sh'
+                sh '''
+                chmod +x pipeline.sh
+                . venv/bin/activate
+                ./pipeline.sh
+                '''
             }
         }
     }
