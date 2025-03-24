@@ -2,23 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Setup Environment') {
             steps {
-                sh 'python3 --version'
-                sh 'pip3 install -r requirements.txt'
+                sh 'python3 -m venv venv'
+                sh '. venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
         stage('Run Pipeline') {
             steps {
                 sh 'chmod +x pipeline.sh'
-                sh './pipeline.sh'
+                sh '. venv/bin/activate && ./pipeline.sh'
             }
         }
     }
