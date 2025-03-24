@@ -7,10 +7,9 @@ pipeline {
     }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Checkout') {
             steps {
-                sh 'pip install --upgrade pip'
-                sh 'pip install -r requirements.txt'
+                checkout scm
             }
         }
 
